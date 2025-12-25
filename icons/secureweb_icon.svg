@@ -1,0 +1,49 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background transparent -->
+  <rect width="256" height="256" fill="none"/>
+
+  <!-- Shield outline (slightly rounded, thin) -->
+  <path
+    d="M128 38
+       L182 56
+       Q190 59 190 68
+       L190 126
+       Q190 164 167 193
+       Q151 214 128 226
+       Q105 214 89 193
+       Q66 164 66 126
+       L66 68
+       Q66 59 74 56
+       Z"
+    stroke="#FFFFFF"
+    stroke-width="8"
+    fill="none"
+    stroke-linejoin="round"
+  />
+
+  <!-- Lock body -->
+  <rect
+    x="104"
+    y="92"
+    width="48"
+    height="42"
+    rx="6"
+    stroke="#FFFFFF"
+    stroke-width="6"
+    fill="none"
+  />
+
+  <!-- Lock shackle -->
+  <path
+    d="M112 92
+       L112 78
+       Q112 64 128 64
+       Q144 64 144 78
+       L144 92"
+    stroke="#FFFFFF"
+    stroke-width="6"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
