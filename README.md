@@ -12,5 +12,6 @@ Prototype browser extension to:
 - Role-based access checks and logging (logcat)
 
 ## Notes
-- This is a prototype for testing and learning. Do NOT publish without security review.
+- This is a prototype for testing and learning.
 - Test in a controlled environment.
+
