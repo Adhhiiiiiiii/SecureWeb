@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SecureWeb</title>
+  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/popup.css">
+</head>
+<body>
+  <div id="svg-sprite-placeholder"></div>
+
+  <div class="container">
+    <div class="d-flex align-items-center" style="gap:14px;margin-bottom:12px">
+      <img src="icons/48.png" width="48" height="48" style="border-radius:8px"/>
+      <div>
+        <div style="font-weight:700;font-size:1.1rem">SecureWeb</div>
+        <div class="text-muted" style="font-size:0.9rem">Realtime Browser Protection</div>
+      </div>
+      <div style="margin-left:auto">
+        <button id="openOnboard" class="btn btn-sm btn-outline-light">Help</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <label class="form-switch"><input type="checkbox" id="globalProtect" checked /><span style="margin-left:10px;font-weight:600">Protection</span></label>
+          <div class="text-muted" style="font-size:0.86rem">Global protection toggle</div>
+        </div>
+        <div><span id="statusBadge" class="badge badge-success">Active</span></div>
+      </div>
+
+      <div style="margin-top:12px" class="row">
+        <label class="form-switch"><input type="checkbox" id="blockCamera" /><span style="margin-left:10px">Block Camera</span></label>
+        <label class="form-switch"><input type="checkbox" id="blockMic" /><span style="margin-left:10px">Block Microphone</span></label>
+        <label class="form-switch"><input type="checkbox" id="blockLocation" /><span style="margin-left:10px">Block Location</span></label>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button id="whitelistBtn" class="btn btn-outline-light btn-sm" style="flex:1">Whitelist site</button>
+        <button id="tempAllowBtn" class="btn btn-light btn-sm" style="flex:1">Allow 10m</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="d-flex justify-content-between align-items-center" style="margin-bottom:8px">
+        <div class="text-muted">Current site</div>
+        <div><small class="text-muted">Role</small></div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <div id="siteOrigin">—</div>
+        <div id="siteRole" class="badge">guest</div>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:10px">
+        <select id="roleSelect" class="form-select" style="flex:1">
+          <option value="guest">Guest</option><option value="user">User</option><option value="admin">Admin</option>
+        </select>
+        <button id="setRoleBtn" class="btn btn-outline-light btn-sm">Set</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="d-flex justify-content-between align-items-center" style="margin-bottom:8px">
+        <div class="text-muted">Activity Log</div>
+        <div style="display:flex;gap:8px">
+          <button id="exportLogs" class="btn btn-outline-light btn-sm">Export</button>
+          <button id="clearLogs" class="btn btn-danger btn-sm">Clear</button>
+        </div>
+      </div>
+      <div id="logsContainer">
+        <table class="table"><tbody id="logsBody"></tbody></table>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:10px"><small class="text-muted">SecureWeb v0.2 • Local prototype</small></div>
+  </div>
+
+  <!-- Detail modal -->
+  <div id="detailModal" class="modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <h3 id="detailTitle">Event details</h3>
+      <pre id="detailBody" style="margin-top:10px;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;max-height:360px;overflow:auto;"></pre>
+      <div style="margin-top:12px;text-align:right"><button id="detailClose" class="btn btn-outline-light btn-sm">Close</button></div>
+    </div>
+  </div>
+
+  <!-- Onboarding modal -->
+  <div id="onboardModal" class="modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <h3>Welcome to SecureWeb</h3>
+      <p class="text-muted">SecureWeb blocks page JavaScript from accessing camera, microphone and geolocation unless you allow the site. Use whitelist or temporary allow to enable trusted sites.</p>
+      <ul style="font-size:0.95rem">
+        <li>Toggle protections with the main switch.</li>
+        <li>Whitelist a site permanently or allow temporarily (10 minutes).</li>
+        <li>Open logs to view blocked requests and events.</li>
+      </ul>
+      <div style="margin-top:12px;text-align:right"><button id="onboardClose" class="btn btn-light btn-sm">Got it</button></div>
+    </div>
+  </div>
+
+  <script src="vendor/bootstrap.bundle.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

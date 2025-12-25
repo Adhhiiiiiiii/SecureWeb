@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "SecureWeb - Complete",
+  "version": "0.2",
+  "description": "Blocks JS access to camera/mic/location, prevents auto-downloads, cookie helpers, role & whitelist controls.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "notifications",
+    "alarms",
+    "downloads",
+    "cookies",
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "SecureWeb"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content_protector.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "icons": {
+    "48": "icons/48.png"
+  }
+}
