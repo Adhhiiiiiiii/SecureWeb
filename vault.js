@@ -1,40 +1,76 @@
-// vault.js - Web Crypto helpers for local encryption (import where needed)
-// NOTE: the extension storage is already separated from pages; this adds an extra encrypted layer.
+// vault.js - AES-GCM encryption helper for SecureWeb
 
-async function generateKey() {
-  return crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
-}
+const Vault = (() => {
+  const algo = {
+    name: "AES-GCM",
+    length: 256
+  };
 
-async function exportKeyBase64(key) {
-  const raw = await crypto.subtle.exportKey("raw", key);
-  return btoa(String.fromCharCode(...new Uint8Array(raw)));
-}
+  async function generateKey() {
+    const key = await crypto.subtle.generateKey(algo, true, ["encrypt", "decrypt"]);
+    const jwk = await crypto.subtle.exportKey("jwk", key);
+    return jwk;
+  }
 
-async function importKeyFromBase64(b64) {
-  const raw = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-  return crypto.subtle.importKey("raw", raw.buffer, "AES-GCM", true, ["encrypt", "decrypt"]);
-}
+  async function importKey(jwk) {
+    return crypto.subtle.importKey("jwk", jwk, algo, true, ["encrypt", "decrypt"]);
+  }
 
-async function encryptData(key, text) {
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const enc = new TextEncoder().encode(text);
-  const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, enc);
-  return { iv: Array.from(iv), data: Array.from(new Uint8Array(cipher)) };
-}
+  function strToBuf(str) {
+    return new TextEncoder().encode(str);
+  }
 
-async function decryptData(key, payload) {
-  const iv = new Uint8Array(payload.iv);
-  const data = new Uint8Array(payload.data);
-  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, data);
-  return new TextDecoder().decode(plain);
-}
+  function bufToStr(buf) {
+    return new TextDecoder().decode(buf);
+  }
 
-// small helpers to store/retrieve exported key
-async function ensureVaultKey() {
-  const s = await chrome.storage.local.get(["vault_key_b64"]);
-  if (s.vault_key_b64) return await importKeyFromBase64(s.vault_key_b64);
-  const key = await generateKey();
-  const b64 = await exportKeyBase64(key);
-  await chrome.storage.local.set({ vault_key_b64: b64 });
-  return key;
+  function bufToBase64(buf) {
+    const bytes = new Uint8Array(buf);
+    let bin = "";
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+
+  function base64ToBuf(b64) {
+    const bin = atob(b64);
+    const buf = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+    return buf.buffer;
+  }
+
+  async function encrypt(jwk, plaintext) {
+    const key = await importKey(jwk);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const enc = await crypto.subtle.encrypt(
+      { name: "AES-GCM", iv },
+      key,
+      strToBuf(plaintext)
+    );
+    return {
+      iv: bufToBase64(iv),
+      data: bufToBase64(enc)
+    };
+  }
+
+  async function decrypt(jwk, obj) {
+    const key = await importKey(jwk);
+    const iv = base64ToBuf(obj.iv);
+    const data = base64ToBuf(obj.data);
+    const dec = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: new Uint8Array(iv) },
+      key,
+      data
+    );
+    return bufToStr(dec);
+  }
+
+  return {
+    generateKey,
+    encrypt,
+    decrypt
+  };
+})();
+
+if (typeof window !== "undefined") {
+  window.Vault = Vault;
 }
